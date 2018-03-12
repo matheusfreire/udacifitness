@@ -14,7 +14,7 @@ import { submitEntry, removeEntry} from '../utils/api'
 
 import { connect } from 'react-redux'
 
-import {addEntry} from '../actions/index'
+import { addEntry } from '../actions'
 
 function SubmitBtn ({onPress}){
     return (
