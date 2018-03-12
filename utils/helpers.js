@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {FontAwesome,MaterialIcons, MaterialCommunityIcons} from '@expo/vector-icons';
-import {white} from './colors'
+import {white, black} from './colors'
 
 
 export function getMetricMetaInfo(metric) {
@@ -17,7 +17,7 @@ export function getMetricMetaInfo(metric) {
           <View >
             <MaterialIcons
               name='directions-run'
-              color={white}
+              color={black}
               size={35}
             />
           </View>
@@ -35,7 +35,7 @@ export function getMetricMetaInfo(metric) {
           <View>
             <MaterialCommunityIcons
               name='bike'
-              color={white}
+              color={black}
               size={32}
             />
           </View>
@@ -53,7 +53,7 @@ export function getMetricMetaInfo(metric) {
           <View>
             <MaterialCommunityIcons
               name='swim'
-              color={white}
+              color={black}
               size={35}
             />
           </View>
@@ -71,7 +71,7 @@ export function getMetricMetaInfo(metric) {
           <View>
             <FontAwesome
               name='bed'
-              color={white}
+              color={black}
               size={30}
             />
           </View>
@@ -89,7 +89,7 @@ export function getMetricMetaInfo(metric) {
           <View>
             <MaterialCommunityIcons
               name='food-fork-drink'
-              color={white}
+              color={black}
               size={35}
             />
           </View>
@@ -143,4 +143,10 @@ export function timeToString(time = Date.now()) {
   const date = new Date(time)
   const todayUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
   return todayUTC.toISOString().split('T')[0]
+}
+
+export function getDailyReminderValue(){
+  return {
+    today: "Don't forget to log your data today!"
+  }
 }
