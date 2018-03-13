@@ -140,17 +140,17 @@ const styles = StyleSheet.create({
     androidSubmitBtn: {
         backgroundColor: purple,
         padding: 10,
-        borderRadius: 2,
+        paddingLeft: 30,
+        paddingRight: 30,
         height: 45,
-        marginLeft: 30,
-        marginRight: 30,
+        borderRadius: 2,
         alignSelf: 'flex-end',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     submitBtnText: {
         color: white,
-        fontSize: 12,
+        fontSize: 22,
         textAlign: 'center'
     },
     center: {
