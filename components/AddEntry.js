@@ -5,8 +5,8 @@ import {
   timeToString,
   getDailyReminderValue
 } from '../utils/helpers'
-import Slide from './Slide'
-import Step from './Step'
+import UdaciSlider from './UdaciSlider'
+import UdaciSteppers from './UdaciSteppers'
 import DateHeader from './DateHeader'
 import { Ionicons } from '@expo/vector-icons'
 import TextButton from './TextButton'
@@ -115,12 +115,12 @@ class AddEntry extends Component {
             <View key={key} style={styles.row}>
               {getIcon()}
               {type === 'slider'
-                ? <Slide
+                ? <UdaciSlider
                     value={value}
                     onChange={(value) => this.slide(key, value)}
                     {...rest}
                   />
-                : <Step
+                : <UdaciSteppers
                     value={value}
                     onIncrement={() => this.increment(key)}
                     onDecrement={() => this.decrement(key)}
