@@ -2,102 +2,144 @@ import React, { Component } from 'react'
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
 import { Foundation } from '@expo/vector-icons'
 import { purple, white } from '../utils/colors'
+import { Location, Permissions } from 'expo'
+import { calculateDirection } from '../utils/helpers'
 
 export default class Live extends Component {
-	state = {
-		coords: null,
-		status: 'granted',
-		direction: ''
-	}
+  state = {
+    coords: null,
+    status: null,
+    direction: ''
+  }
 
-	askPermission = () => {
+  componentDidMount() {
+    Permissions.getAsync(Permissions.LOCATION)
+      .then(({status}) => {
+        if(status === 'granted'){
+          return this.setLocation();
+        }
 
-	}
+        this.setState(() => ({status}))
+      })
+      .catch((error) => {
+        console.warn('Error getting Location permission', error)
+        this.setState(() => ({status : 'undertermined'}))
+      })
+  }
 
-	render() {
-		const { status, coords, direction } = this.state
+  askPermission = () => {
+    Permissions.askAsync(Permissions.LOCATION)
+      .then( ({status}) => {
+        if(status === 'granted'){
+          return this.setLocation();
+        }
+        this.setState(() => ({status}))
+      })
+      .catch((error) => {
+        console.warn('Error ask location permission', error)
+      })
+  }
 
-		if (status === null) {
-			return <ActivityIndicator style={{ margin: 30 }} />
-		}
+  setLocation = () => {
+    Location.watchPositionAsync({
+      enableHighAccuracy: true,
+      timeInterval: 1,
+      distanceInterval: 1,
+    }, ({coords}) => {
+      const newDirection = calculateDirection(coords.heading)
+      const {direction} = this.state
+      this.setState(() => ({
+        coords,
+        status: 'granted',
+        direction: newDirection
+      }))
+    })
+  }
 
-		if (status === 'denied') {
-			return (
-				<View style={styles.center}>
-					<Foundation name='alert' size={50} />
-					<Text>You denied your location. You can fix this by visiting your settings and enabling location services for this app.</Text>
-				</View>
-			)
-		}
+  render() {
+    const { status, coords, direction } = this.state
 
-		if (status === 'undertemined') {
-			return (
-				<View style={styles.center}>
-					<Foundation name='alert' size={50} />
-					<Text>
-						You need to enable location services for this app.
+    if (status === null) {
+      return <ActivityIndicator style={{ margin: 30 }} />
+    }
+
+    if (status === 'denied') {
+      return (
+        <View style={styles.center}>
+          <Foundation name='alert' size={50} />
+          <Text>You denied your location. You can fix this by visiting your settings and enabling location services for this app.</Text>
+        </View>
+      )
+    }
+
+    if (status === 'undertemined') {
+      return (
+        <View style={styles.center}>
+          <Foundation name='alert' size={50} />
+          <Text>
+            You need to enable location services for this app.
 					</Text>
-					<TouchableOpacity style={styles.button} onPress={this.askPermission}>
-						<Text style={styles.buttonText}>Enable</Text>
-					</TouchableOpacity>
-				</View>
-			)
-		}
+          <TouchableOpacity style={styles.button} onPress={this.askPermission}>
+            <Text style={styles.buttonText}>Enable</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
 
-		return (
+    return (
       <View style={styles.container}>
         <View style={styles.directionContainer}>
           <Text style={styles.header}>You're heading</Text>
           <Text style={styles.direction}>
-            North
+            {direction}
           </Text>
         </View>
         <View style={styles.metricContainer}>
           <View style={styles.metric}>
-            <Text style={[styles.header, {color: white}]}>
+            <Text style={[styles.header, { color: white }]}>
               Altitude
             </Text>
-            <Text style={[styles.subHeader, {color: white}]}>
-              {200} feet
+            <Text style={[styles.subHeader, { color: white }]}>
+              {Math.round(coords.altitude)} Meters
             </Text>
           </View>
           <View style={styles.metric}>
-            <Text style={[styles.header, {color: white}]}>
+            <Text style={[styles.header, { color: white }]}>
               Speed
             </Text>
-            <Text style={[styles.subHeader, {color: white}]}>
-              {300} MPH
+            <Text style={[styles.subHeader, { color: white }]}>
+              {(coords.speed).toFixed(1)} KPH
             </Text>
           </View>
         </View>
       </View>
     )
-	}
+  }
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'space-between'
-	},
-	center: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginLeft: 30,
-		marginRight: 30
-	},
-	button: {
-		padding: 10,
-		backgroundColor: purple,
-		alignSelf: 'center',
-		borderRadius: 5,
-		margin: 20
-	},
-	buttonText: {
-		color: white,
-		fontSize: 20
-	},
+  container: {
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 30,
+    marginRight: 30
+  },
+  button: {
+    padding: 10,
+    backgroundColor: purple,
+    alignSelf: 'center',
+    borderRadius: 5,
+    margin: 20
+  },
+  buttonText: {
+    color: white,
+    fontSize: 20
+  },
   directionContainer: {
     flex: 1,
     justifyContent: 'center',
