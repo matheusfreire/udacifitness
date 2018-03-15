@@ -3,7 +3,9 @@ import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native
 import {
   getMetricMetaInfo,
   timeToString,
-  getDailyReminderValue
+  getDailyReminderValue,
+  setLocalNotification,
+  clearLocalNotification
 } from '../utils/helpers'
 import UdaciSlider from './UdaciSlider'
 import UdaciSteppers from './UdaciSteppers'
@@ -72,7 +74,8 @@ class AddEntry extends Component {
     submitEntry({ key, entry })
     this.toHome()
 
-    // Clear local notification
+    clearLocalNotification()
+      .then(setLocalNotification)
   }
 
   toHome = () => {
